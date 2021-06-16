@@ -1,5 +1,9 @@
 pipeline{
  agent any
+ tools{
+  maven 'Maven bundle' 
+  jdk 'OPENJDK-11'
+ }
   stages{
     stage('Build'){
       steps{
