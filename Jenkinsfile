@@ -7,7 +7,7 @@ pipeline{
   stages{
    stage('Clean up docker'){
     steps{
-     sh '''docker rmi $(docker images -f “dangling=true” -q)'''
+     sh '''docker system prune'''
     }
    }
     stage('Pre SonarQube build project'){
