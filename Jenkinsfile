@@ -5,8 +5,13 @@ pipeline{
   jdk 'OPENJDK-11' 
  }
   stages{
-      stage('Pre SonarQube build project'){
-          steps{
+   stage('Clean up docker'){
+    steps{
+     sh 'docker rmi $(docker images -f “dangling=true” -q)'
+    }
+   }
+    stage('Pre SonarQube build project'){
+        steps{
               sh 'mvn clean install -Dmaven.test.skip=true'
           }
       }
@@ -42,8 +47,14 @@ pipeline{
   }
   post{
     always{
-   sh 'docker-compose up'
+     stages{
+      stage('Docker Compose Up'){
+            stage{
+             steps{
+               sh 'docker-compose up'
+             }
+         }
+     }
     cleanWs()
-    }
   }
 }
