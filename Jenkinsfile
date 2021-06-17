@@ -28,7 +28,7 @@ pipeline{
                 -D sonar.projectKey=petclinic-service-sonarqube \
                 -D sonar.login=admin \
                 -D sonar.password=Ep@m2021DeVOps \
-                -D  sonar.sources=/var/lib/jenkins/workspace/petclinic-microservices-pipeline-sonarqube/ \
+                -D  sonar.sources=/var/lib/jenkins/workspace/petclinic-microservices-pipeline/ \
                 -D sonar.host.url=http://20.79.176.28:9000/\
                 -D sonar.test.exclusions=**/test/**/*.*,**/.mvn/wrapper/*,**/*.java \
                 -D sonar.language=java \
