@@ -8,7 +8,7 @@ pipeline{
    stage('Clean up docker'){
     steps{
      sh '''docker system prune'''
-     sh 'echo yes'
+     sh 'y'
     }
    }
     stage('Pre SonarQube build project'){
