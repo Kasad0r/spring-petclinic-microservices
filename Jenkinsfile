@@ -7,7 +7,7 @@ pipeline{
   stages{
    stage('Clean up docker'){
     steps{
-     sh 'docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+     sh '''docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'''
     }
    }
     stage('Pre SonarQube build project'){
@@ -39,7 +39,7 @@ pipeline{
             }
         }
     }
-   stage('Build'){
+   stage('Build with Unit tests'){
       steps{
       sh 'mvn clean install -P buildDocker'
       }
