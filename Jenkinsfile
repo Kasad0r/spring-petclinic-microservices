@@ -47,15 +47,7 @@ pipeline{
   }
   post{
     always{
-     stages{
-      stage('Docker Compose Up'){
-            stage{
-             steps{
-               sh 'docker-compose up'
-             }
-          }
-       }
-     }
+    sh 'docker-compose up'
     cleanWs()
   }
 }
