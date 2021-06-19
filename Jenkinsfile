@@ -9,7 +9,7 @@ pipeline{
     steps{
      sh '''docker system prune -f'''  
     }
-  
+   }
     stage('Pre SonarQube build project'){
         steps{
               sh 'mvn clean install -Dmaven.test.skip=true'
@@ -59,13 +59,12 @@ pipeline{
       }
     }
   }
- }
+
   post{
     always{
      sh '''docker system prune -f'''
      // TO DO
     cleanWs()
   }
-}
 }
 }
