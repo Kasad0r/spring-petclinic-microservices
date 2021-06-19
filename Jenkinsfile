@@ -48,6 +48,13 @@ pipeline{
   post{
     always{
      sh '''docker system prune -f'''
+     sh 'push springcommunity/spring-petclinic-api-gateway'
+     sh 'push springcommunity/spring-petclinic-discovery-server '
+     sh 'push springcommunity/spring-petclinic-config-server  '
+     sh 'push springcommunity/spring-petclinic-visits-service '
+     sh 'push springcommunity/spring-petclinic-vets-service'
+     sh 'push springcommunity/spring-petclinic-customers-service'
+     sh 'push springcommunity/spring-petclinic-admin-server'
      // TO DO
     cleanWs()
   }
