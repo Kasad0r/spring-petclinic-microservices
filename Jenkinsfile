@@ -46,17 +46,17 @@ pipeline{
   }
  stage('Push Docker images to Registry'){
      steps{
-     sh 'docker push springcommunity/spring-petclinic-api-gateway'
-     sh 'docker push springcommunity/spring-petclinic-discovery-server '
-     sh 'docker push springcommunity/spring-petclinic-config-server  '
-     sh 'docker push springcommunity/spring-petclinic-visits-service '
-     sh 'docker push springcommunity/spring-petclinic-vets-service'
-     sh 'docker push springcommunity/spring-petclinic-customers-service'
-     sh 'docker push springcommunity/spring-petclinic-admin-server'
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-config-server  '
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-visits-service '
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-vets-service'
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-customers-service'
+     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-admin-server'
       }
     }
  }
-  post{
+  post{ł
     always{
      sh '''docker system prune -f'''
      // TO DO
