@@ -27,8 +27,8 @@ pipeline{
                 ${scannerHome}/bin/sonar-scanner \
                 -D sonar.projectKey=petclinic-service-sonarqube \
                 -D sonar.login=admin \
-                -D sonar.password=Ep@m2021DeVOps \
-                -D  sonar.sources=/var/lib/jenkins/workspace/petclinic-microservices-pipeline/ \
+                -D sonar.password=${env.sonar-password} \
+                -D sonar.sources=/var/lib/jenkins/workspace/petclinic-microservices-pipeline/ \
                 -D sonar.host.url=http://20.79.176.28:9000/\
                 -D sonar.test.exclusions=**/test/**/*.*,**/.mvn/wrapper/*,**/*.java \
                 -D sonar.language=java \
@@ -46,6 +46,7 @@ pipeline{
   }
  stage('Push Docker images to Registry'){
      steps{
+     sh '''docker login --username=${env.docker-registry-login} --password=${env.docker-registry-password} petclinicmicroservicesregistry.azurecr.io'''
      sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
      sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
      sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-config-server  '
