@@ -43,7 +43,6 @@ pipeline{
       steps{
       sh 'mvn clean install -P buildDocker'
       }
-    }
   }
  stage('Push Docker images to Registry'){
      steps{
