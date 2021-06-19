@@ -16,12 +16,10 @@ pipeline {
             }
         }
         stage('SonarQube analysis') {
-
             environment {
                 scannerHome = tool 'sonarqube'
             }
             steps {
-
                 withSonarQubeEnv('sonarqube server') {
                     withCredentials([string(credentialsId: 'sonarqube-password', variable: 'PASSWORD')]) {
                         sh '''
@@ -46,8 +44,8 @@ pipeline {
             }
         }
         stage('Push Docker images to Registry') {
+            steps {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                steps {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD petclinicmicroservicesregistry.azurecr.io'''
                     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
                     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
