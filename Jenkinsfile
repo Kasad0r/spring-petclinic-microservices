@@ -46,7 +46,7 @@ pipeline {
         stage('Push Docker images to Registry') {
             steps {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io.azurecr.io'''
+                    sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway'
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-discovery-server '
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-config-server  '
