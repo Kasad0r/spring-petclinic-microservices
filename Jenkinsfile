@@ -56,7 +56,7 @@ pipeline{
       }
     }
  }
-  post{ł
+  post{
     always{
      sh '''docker system prune -f'''
      // TO DO
