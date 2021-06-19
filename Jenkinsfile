@@ -46,14 +46,14 @@ pipeline {
         stage('Push Docker images to Registry') {
             steps {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh '''docker login --username=$USERNAME --password=$PASSWORD petclinicmicroservicesregistry.azurecr.io'''
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-config-server  '
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-visits-service '
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-vets-service'
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-customers-service'
-                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-admin-server'
+                    sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io.azurecr.io'''
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway'
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-discovery-server '
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-config-server  '
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-visits-service '
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-vets-service'
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-customers-service'
+                    sh 'docker push  ptclnc.azurecr.io/spring-petclinic-admin-server'
                 }
             }
         }
