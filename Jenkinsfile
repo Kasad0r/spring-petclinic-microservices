@@ -6,12 +6,12 @@ pipeline {
     }
     stages {
         stage('Clean up docker') {
-            step s {
+            steps {
                 sh '''docker system prune -f'''
             }
         }
         stage('Pre SonarQube build project') {
-            step s {
+            steps {
                 sh 'mvn clean install -Dmaven.test.skip=true'
             }
         }
@@ -41,13 +41,13 @@ pipeline {
             }
         }
         stage('Build with Unit tests') {
-            step s {
+            steps {
                 sh 'mvn clean install -P buildDocker'
             }
         }
         stage('Push Docker images to Registry') {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                step s {
+                steps {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD petclinicmicroservicesregistry.azurecr.io'''
                     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
                     sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
