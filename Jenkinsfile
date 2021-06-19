@@ -12,6 +12,7 @@ pipeline{
    }
     stage('Pre SonarQube build project'){
         steps{
+         sh'echo ${env.sonar-password}'
               sh 'mvn clean install -Dmaven.test.skip=true'
           }
       }
