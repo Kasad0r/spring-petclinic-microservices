@@ -7,12 +7,13 @@ pipeline{
   stages{
    stage('Clean up docker'){
     steps{
+       sh 'echo hello'
+       sh 'echo ${env.sonar-password}'
      sh '''docker system prune -f'''  
     }
    }
     stage('Pre SonarQube build project'){
         steps{
-         sh'echo ${env.sonar-password}'
               sh 'mvn clean install -Dmaven.test.skip=true'
           }
       }
