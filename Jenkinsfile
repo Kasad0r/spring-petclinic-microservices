@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven 3.5.4'
         jdk 'OPENJDK-11'
     }
-    stage s {
+      stages {
         stage('Clean up docker') {
             step s {
                 sh '''docker system prune -f'''
