@@ -1,30 +1,30 @@
-pipeline{
- agent any
- tools{
-  maven 'Maven 3.5.4' 
-  jdk 'OPENJDK-11' 
- }
-  stages{
-   stage('Clean up docker'){
-    steps{
-     sh '''docker system prune -f'''  
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.5.4'
+        jdk 'OPENJDK-11'
     }
-   }
-    stage('Pre SonarQube build project'){
-        steps{
-              sh 'mvn clean install -Dmaven.test.skip=true'
-          }
-      }
-   stage('SonarQube analysis') {
-
-        environment {
-            scannerHome = tool 'sonarqube'
+    stage s {
+        stage('Clean up docker') {
+            step s {
+                sh '''docker system prune -f'''
+            }
         }
-        steps {
+        stage('Pre SonarQube build project') {
+            step s {
+                sh 'mvn clean install -Dmaven.test.skip=true'
+            }
+        }
+        stage('SonarQube analysis') {
 
-            withSonarQubeEnv('sonarqube server') {
-             withCredentials([string(credentialsId: 'sonarqube-password', variable: 'PASSWORD')]) {
-                sh '''
+            environment {
+                scannerHome = tool 'sonarqube'
+            }
+            steps {
+
+                withSonarQubeEnv('sonarqube server') {
+                    withCredentials([string(credentialsId: 'sonarqube-password', variable: 'PASSWORD')]) {
+                        sh '''
                 ${scannerHome}/bin/sonar-scanner \
                 -D sonar.projectKey=petclinic-service-sonarqube \
                 -D sonar.login=admin \
@@ -36,35 +36,36 @@ pipeline{
                 -D sonar.java.source=11 \
                 -D sonar.java.binaries=**/target/classes \
                 '''
-}
+                    }
+                }
+            }
+        }
+        stage('Build with Unit tests') {
+            step s {
+                sh 'mvn clean install -P buildDocker'
+            }
+        }
+        stage('Push Docker images to Registry') {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                step s {
+                    sh '''docker login --username=$USERNAME --password=$PASSWORD petclinicmicroservicesregistry.azurecr.io'''
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-config-server  '
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-visits-service '
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-vets-service'
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-customers-service'
+                    sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-admin-server'
+                }
+            }
+        }
+
+        post {
+            always {
+                sh '''docker system prune -f'''
+                // TO DO
+                cleanWs()
             }
         }
     }
-   stage('Build with Unit tests'){
-      steps{
-      sh 'mvn clean install -P buildDocker'
-      }
-  }
- stage('Push Docker images to Registry'){
-  withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId:'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-     steps{
-       sh '''docker login --username=$USERNAME --password=$PASSWORD petclinicmicroservicesregistry.azurecr.io'''
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-api-gateway'
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-discovery-server '
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-config-server  '
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-visits-service '
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-vets-service'
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-customers-service'
-       sh 'docker push  petclinicmicroservicesregistry.azurecr.io/spring-petclinic-admin-server'
-      }
-    }
-  }
-
-  post{
-    always{
-     sh '''docker system prune -f'''
-     // TO DO
-    cleanWs()
-  }
-}
 }
