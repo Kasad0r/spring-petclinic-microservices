@@ -8,7 +8,7 @@ pipeline{
    stage('Clean up docker'){
     steps{
        sh 'echo hello'
-       sh 'echo ${env.sonar-password}'
+       sh "echo ${env.sonar-password}"
      sh '''docker system prune -f'''  
     }
    }
