@@ -54,6 +54,7 @@ pipeline {
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-vets-service'
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-customers-service'
                     sh 'docker push  ptclnc.azurecr.io/spring-petclinic-admin-server'
+                    sh 'docker push  ptclnc.azurecr.io/zipkin'
                 }
             }
         }
