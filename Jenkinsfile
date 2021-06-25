@@ -6,7 +6,13 @@ pipeline {
     }
     stages {
         stage('Clean up docker') {
+              environment {
+                def pom = readMavenPom file: 'pom.xml'
+                def version  = readMavenPom().getVersion()
+                
+            }
             steps {
+                echo '${version}'
                 sh '''docker system prune -f'''
             }
         }
