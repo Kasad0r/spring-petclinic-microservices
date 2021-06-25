@@ -46,7 +46,7 @@ pipeline {
         stage('Push Docker images to Registry') {
             environment {
                 def pom = readMavenPom file: 'pom.xml'
-                def version = writeMavenPom model: pom
+                def version = pom.version
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
