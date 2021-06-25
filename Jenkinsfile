@@ -46,18 +46,17 @@ pipeline {
         stage('Push Docker images to Registry') {
             environment {
                 def pom = readMavenPom file: 'pom.xml'
-                def version = pom.version
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-discovery-server:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-config-server:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-visits-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-vets-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-customers-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-admin-server:${version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-discovery-server:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-config-server:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-visits-service:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-vets-service:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-customers-service:${pom.version}"
+                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-admin-server:${pom.version}"
                     sh "docker push  ptclnc.azurecr.io/zipkin"
                 }
             }
