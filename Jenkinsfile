@@ -44,9 +44,11 @@ pipeline {
             }
         }
         stage('Push Docker images to Registry') {
-            steps {
+            environment {
                 def pom = readMavenPom file: 'pom.xml'
                 def version = writeMavenPom model: pom
+            }
+            steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
                     sh "docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway:${version}"
