@@ -12,7 +12,8 @@ pipeline {
                 
             }
             steps {
-                echo '${version}'
+                sh 'echo ${version}'
+                sh 'echo $version'
                 sh '''docker system prune -f'''
             }
         }
