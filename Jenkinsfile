@@ -6,8 +6,6 @@ def tagPushWithVersionAndLatest(String imgName, String version = "") {
 }
 
 pipeline {
-    node {
-
         agent any
         tools {
             maven 'Maven 3.5.4'
@@ -81,4 +79,3 @@ pipeline {
             }
         }
     }
-}
