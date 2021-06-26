@@ -5,8 +5,9 @@ def tagPushWithVersionAndLatest(String imgName, String version = "") {
     sh "docker push  ptclnc.azurecr.io/${imgName}:latest"
 }
 
-node {
-    pipeline {
+pipeline {
+    node {
+
         agent any
         tools {
             maven 'Maven 3.5.4'
