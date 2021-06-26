@@ -50,14 +50,16 @@ pipeline {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
-                    tagPushWithVersionAndLatest("spring-petclinic-api-gateway",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-discovery-server",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-config-server",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-visits-service",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-vets-service",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-customers-service",${version})
-                    tagPushWithVersionAndLatest("spring-petclinic-admin-server",${version})
-                    sh "docker push  ptclnc.azurecr.io/zipkin"
+                    script {
+                        tagPushWithVersionAndLatest("spring-petclinic-api-gateway",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-discovery-server",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-config-server",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-visits-service",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-vets-service",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-customers-service",${version})
+                        tagPushWithVersionAndLatest("spring-petclinic-admin-server",${version})
+                        sh "docker push  ptclnc.azurecr.io/zipkin"
+                    }
                 }
             }
         }
