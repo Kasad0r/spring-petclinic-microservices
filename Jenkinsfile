@@ -1,30 +1,38 @@
-pipeline {
-    agent any
-    tools {
-        maven 'Maven 3.5.4'
-        jdk 'OPENJDK-11'
-    }
-    stages {
-        stage('Clean up docker') {
-   
-            steps {
-                sh 'pwd'
-                sh '''docker system prune -f'''
-            }
+def tagPushWithVersionAndLatest(String imgName, String version = "") {
+    sh "docker tag springcommunity/${imgName}:${version} ptclnc.azurecr.io/${imgName}:${version}"
+    sh "docker push  ptclnc.azurecr.io/${imgName}:${version}"
+    sh "docker tag springcommunity/${imgName}:${version} ptclnc.azurecr.op/${imgName}:latest"
+    sh "docker push  ptclnc.azurecr.io/${imgName}:latest"
+}
+
+node {
+    pipeline {
+        agent any
+        tools {
+            maven 'Maven 3.5.4'
+            jdk 'OPENJDK-11'
         }
-        stage('Pre SonarQube build project') {
-            steps {
-                sh 'mvn clean install -Dmaven.test.skip=true'
+        stages {
+            stage('Clean up docker') {
+
+                steps {
+                    sh 'pwd'
+                    sh '''docker system prune -f'''
+                }
             }
-        }
-        stage('SonarQube analysis') {
-            environment {
-                scannerHome = tool 'sonarqube'
+            stage('Pre SonarQube build project') {
+                steps {
+                    sh 'mvn clean install -Dmaven.test.skip=true'
+                }
             }
-            steps {
-                withSonarQubeEnv('sonarqube server') {
-                    withCredentials([string(credentialsId: 'sonarqube-password', variable: 'PASSWORD')]) {
-                        sh '''
+            stage('SonarQube analysis') {
+                environment {
+                    scannerHome = tool 'sonarqube'
+                }
+                steps {
+                    withSonarQubeEnv('sonarqube server') {
+                        withCredentials([string(credentialsId: 'sonarqube-password', variable: 'PASSWORD')]) {
+                            sh '''
                 ${scannerHome}/bin/sonar-scanner \
                 -D sonar.projectKey=petclinic-service-sonarqube \
                 -D sonar.login=admin \
@@ -36,23 +44,22 @@ pipeline {
                 -D sonar.java.source=11 \
                 -D sonar.java.binaries=**/target/classes \
                 '''
+                        }
                     }
                 }
             }
-        }
-        stage('Build with Unit tests') {
-            steps {
-                sh 'mvn clean install -P buildDocker'
+            stage('Build with Unit tests') {
+                steps {
+                    sh 'mvn clean install -P buildDocker'
+                }
             }
-        }
-        stage('Push Docker images to Registry') {
-            environment {
-                 version  = readMavenPom().getVersion()
-                 tagPushWithVersionAndLatest = load('/var/lib/jenkins/workspace/petclinic-microservices-pipeline/shared-jenkins-addons/tagPushWithVersionAndLatest.groovy')
-            }
-            steps {
-                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-                    sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
+            stage('Push Docker images to Registry') {
+                environment {
+                    version = readMavenPom().getVersion()
+                }
+                steps {
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
                         tagPushWithVersionAndLatest("spring-petclinic-api-gateway", version)
                         tagPushWithVersionAndLatest("spring-petclinic-discovery-server", version)
                         tagPushWithVersionAndLatest("spring-petclinic-config-server", version)
@@ -61,15 +68,16 @@ pipeline {
                         tagPushWithVersionAndLatest("spring-petclinic-customers-service", version)
                         tagPushWithVersionAndLatest("spring-petclinic-admin-server", version)
                         sh "docker push  ptclnc.azurecr.io/zipkin"
+                    }
                 }
             }
         }
-    }
-    post {
-        always {
-            sh '''docker system prune -f'''
-            // TO DO
-            cleanWs()
+        post {
+            always {
+                sh '''docker system prune -f'''
+                // TO DO
+                cleanWs()
+            }
         }
     }
 }
