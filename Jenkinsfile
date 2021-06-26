@@ -50,20 +50,13 @@ pipeline {
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
-                    sh "docker tag springcommunity/spring-petclinic-api-gateway:${version} ptclnc.azurecr.io/spring-petclinic-api-gateway:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-api-gateway:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-discovery-server:${version} ptclnc.azurecr.io/spring-petclinic-discovery-server:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-discovery-server:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-config-server:${version}   ptclnc.azurecr.io/spring-petclinic-config-server:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-config-server:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-visits-service:${version}   ptclnc.azurecr.io/spring-petclinic-visits-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-visits-service:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-vets-service:${version}   ptclnc.azurecr.io/spring-petclinic-vets-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-vets-service:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-customers-service:${version}   ptclnc.azurecr.io/spring-petclinic-customers-service:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-customers-service:${version}"
-                    sh "docker tag springcommunity/spring-petclinic-admin-server:${version}   ptclnc.azurecr.io/spring-petclinic-admin-server:${version}"
-                    sh "docker push  ptclnc.azurecr.io/spring-petclinic-admin-server:${version}"
+                    tagPushWithVersionAndLatest("spring-petclinic-api-gateway",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-discovery-server",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-config-server",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-visits-service",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-vets-service",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-customers-service",${version})
+                    tagPushWithVersionAndLatest("spring-petclinic-admin-server",${version})
                     sh "docker push  ptclnc.azurecr.io/zipkin"
                 }
             }
@@ -76,4 +69,10 @@ pipeline {
             cleanWs()
         }
     }
+}
+def tagPushWithVersionAndLatest(String imgName,String version =""){
+    sh "docker tag springcommunity/${imgName}:${version} ptclnc.azurecr.io/${imgName}:${version}"
+    sh "docker push  ptclnc.azurecr.io/${imgName}:${version}"
+    sh "docker tag springcommunity/${imgName}:${version} ptclnc.azurecr.op/${imgName}:latest"
+    sh "docker push  ptclnc.azurecr.io/${imgName}:latest"
 }
