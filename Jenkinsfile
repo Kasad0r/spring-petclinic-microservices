@@ -6,9 +6,7 @@ pipeline {
     }
     stages {
         stage('Clean up docker') {
-              environment {
-              // def tagPushWithVersionAndLatest = load('/spring-petclinic-microservices/shared-jenkins-addons/tagPushWithVersionAndLatest.groovy')
-            }
+   
             steps {
                 sh 'pwd'
                 sh '''docker system prune -f'''
