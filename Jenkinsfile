@@ -46,11 +46,11 @@ pipeline {
         stage('Push Docker images to Registry') {
             environment {
                 def version  = readMavenPom().getVersion()
+                def tagPushWithVersionAndLatest = load('/shared-jenkins-addons/tagPushWithVersionAndLatest.groovy')
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                     sh '''docker login --username=$USERNAME --password=$PASSWORD ptclnc.azurecr.io'''
-                    script {
                         tagPushWithVersionAndLatest("spring-petclinic-api-gateway",${version})
                         tagPushWithVersionAndLatest("spring-petclinic-discovery-server",${version})
                         tagPushWithVersionAndLatest("spring-petclinic-config-server",${version})
@@ -59,7 +59,6 @@ pipeline {
                         tagPushWithVersionAndLatest("spring-petclinic-customers-service",${version})
                         tagPushWithVersionAndLatest("spring-petclinic-admin-server",${version})
                         sh "docker push  ptclnc.azurecr.io/zipkin"
-                    }
                 }
             }
         }
