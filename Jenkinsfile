@@ -48,7 +48,7 @@ pipeline {
         stage('Push Docker images to Registry') {
             environment {
                 def version  = readMavenPom().getVersion()
-                def tagPushWithVersionAndLatest = load('/shared-jenkins-addons/tagPushWithVersionAndLatest.groovy')
+                def tagPushWithVersionAndLatest = load('/var/lib/jenkins/workspace/petclinic-microservices-pipeline/shared-jenkins-addons/tagPushWithVersionAndLatest.groovy')
             }
             steps {
                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker-registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
